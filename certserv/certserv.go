@@ -42,7 +42,7 @@ type Certserv struct {
 var (
 
 	caWorkDir=getEnv("workdir","/usr/local/adcs-sim")
-	caCertFile   = caWorkDir + "root.pem"
+	caCertFile   = caWorkDir + "/ca/root.pem"
 	caKeyFile    = caWorkDir + "/ca/root.key"
 	caDir        = caWorkDir + "/ca"
 

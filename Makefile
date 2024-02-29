@@ -9,10 +9,10 @@ PROJECT?=github.com/djkormo/adcs-simulator
 # DOCKER TASKS
 # Build the container
 build: ## Build the container
-	docker build -t $(APP_NAME) . --progress=plain
+	docker build -t $(APP_NAME) . --progress=plain --build-arg VERSION=${VERSION} --build-arg  COMMIT=${COMMIT} --build-arg BUILD_TIME=${BUILD_TIME} --build-arg PROJECT=${PROJECT}
 
 build-nc: ## Build the container without caching
-	docker build --no-cache -t $(APP_NAME) . --progress=plain
+	docker build --no-cache -t $(APP_NAME) . --progress=plain --build-arg VERSION=${VERSION} --build-arg  COMMIT=${COMMIT} --build-arg BUILD_TIME=${BUILD_TIME} --build-arg PROJECT=${PROJECT}
 
 run: ## Run container on port configured in `config.env`
 	docker run --name $(APP_NAME) -it  $(DOCKER_REPO)/$(APP_NAME):latest  bash

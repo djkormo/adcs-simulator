@@ -5,6 +5,7 @@ FROM golang:1.21 as builder
 ARG VERSION 
 ARG COMMIT
 ARG BUILD_TIME
+ARG PROJECT 
 
 WORKDIR /workspace
 
@@ -18,7 +19,7 @@ COPY main.go main.go
 RUN go mod download
 
 # Copy the go source
-
+COPY ca/ ca/
 COPY certserv/ certserv/
 COPY templates/ templates/
 COPY version/ version/
@@ -39,7 +40,7 @@ COPY --from=builder /workspace /usr/local/bin/
 
 COPY --from=builder /workspace/templates /usr/local/adcs-sim/templates
 COPY --from=builder /workspace/manager /usr/local/adcs-sim/manager
-
+COPY --from=builder /workspace/ca /usr/local/adcs-sim/ca
 USER nonroot:nonroot
 
 ENTRYPOINT ["/usr/local/adcs-sim/manager"]
