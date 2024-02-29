@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+
+  name: adcs-sim-cert
+  namespace: cert-manager
+spec:
+  commonName: example.com
+  dnsNames:
+  - adcs1.example.com
+  - adcs2.example.com
+
+  issuerRef:
+    group: adcs.certmanager.csf.nokia.com
+    kind: ClusterAdcsIssuer
+    name: adcs-cluster-issuer-adcs-sim
+  #organization:
+  #- Your organization
+  secretName: adcs-sim-secret
