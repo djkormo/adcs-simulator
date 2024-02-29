@@ -1,20 +1,15 @@
 module github.com/djkormo/adcs-simulator
 
-go 1.17
+go 1.21
 
 require (
 	github.com/jetstack/cert-manager v1.3.1
-	//github.com/nokia/adcs-issuer v0.0.0-20221107114751-732b348ad092
-	github.com/stretchr/testify v1.6.1
 	github.com/sykesm/zap-logfmt v0.0.4
 	go.uber.org/zap v1.15.0
 	sigs.k8s.io/controller-runtime v0.8.3
 )
 
-require github.com/nokia/adcs-issuer v0.0.0-20221107114751-732b348ad092
-
 require (
-	github.com/Azure/go-ntlmssp v0.0.0-20200615164410-66371956d46c // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -23,7 +18,6 @@ require (
 	github.com/go-logr/logr v0.3.0 // indirect
 	github.com/go-logr/zapr v0.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.5 // indirect
@@ -37,7 +31,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.11.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.26.0 // indirect
