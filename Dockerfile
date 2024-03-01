@@ -44,3 +44,4 @@ COPY --from=builder /workspace/ca /usr/local/adcs-sim/ca
 USER nonroot:nonroot
 
 ENTRYPOINT ["/usr/local/adcs-sim/manager"]
+
