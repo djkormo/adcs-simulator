@@ -62,3 +62,7 @@ operator-build:
 		-ldflags "-s -w -X ${PROJECT}/version.Release=${VERSION} \
 		-X ${PROJECT}/version.Commit=${COMMIT} -X ${PROJECT}/version.BuildTime=${BUILD_TIME}" \
 		-o ${APP_NAME}
+
+.PHONY: docker-build
+docker-build: ## Build docker image with the manager.
+	DOCKER_BUILDKIT=1 docker build -t $(APP_NAME) . --progress=plain
