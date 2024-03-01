@@ -25,6 +25,10 @@ release: build-nc publish ## Make a release by building and publishing the `{ver
 # Docker publish
 publish: repo-login publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
 
+repo-login: tag-latest
+	@echo 'Docker login to $(DOCKER_REPO)'
+	docker login -u $(DOCKER_REPO)
+
 publish-latest: tag-latest ## Publish the `latest` taged container to ECR
 	@echo 'publish latest to $(DOCKER_REPO)'
 	docker push $(DOCKER_REPO)/$(APP_NAME):latest
@@ -62,3 +66,7 @@ operator-build:
 		-ldflags "-s -w -X ${PROJECT}/version.Release=${VERSION} \
 		-X ${PROJECT}/version.Commit=${COMMIT} -X ${PROJECT}/version.BuildTime=${BUILD_TIME}" \
 		-o ${APP_NAME}
+
+.PHONY: docker-build
+docker-build: ## Build docker image with the manager.
+	DOCKER_BUILDKIT=1 docker build -t $(APP_NAME) . --progress=plain
