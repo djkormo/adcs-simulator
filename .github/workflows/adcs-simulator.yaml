@@ -72,6 +72,6 @@ jobs:
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
-        skip-dirs: /usr/local/adcs-sim/ca
+        skip-dirs: /usr/local/adcs-sim/ca,/usr/local/bin/ca/
 
 
