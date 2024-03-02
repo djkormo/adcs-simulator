@@ -109,7 +109,16 @@ kubebuilder version
 operator-sdk version
 helm version 
 
-minikube start -p aged --kubernetes-version=${KUBERNETES_VERSION}
+minikube start -p issuer --kubernetes-version=${KUBERNETES_VERSION}
+
+minikube -p issuer addons enable ingress
+minikube -p issuer dashboard
+
+echo "alias k='kubectl'" >> ~/.bashrc
+echo "alias kubectx='kubectl config use-context '" >> ~/.bashrc
+echo "alias kubens='kubectl config set-context --current --namespace '" >> ~/.bashrc
+echo "alias kge='kubectl get events --sort-by=.metadata.creationTimestamp'" >> ~/.bashrc
+echo "alias kubegc='kubectl config get-contexts'"  >> ~/.bashrc
 
 kubectl get nodes -o wide
 
