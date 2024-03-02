@@ -1,0 +1,14 @@
+{
+    "postStartCommand": "bash .devcontainer/start_up.sh",
+    "customizations": {
+        "vscode": {
+          "extensions": ["redhat.vscode-yaml",
+          "ms-kubernetes-tools.vscode-kubernetes-tools",
+          "golang.Go",
+          "mhutchie.git-graph",
+          "766b.go-outliner", "m4ns0ur.base64"
+          ]
+
+        }
+      }
+}
