@@ -101,6 +101,12 @@ kubectl krew install split-yaml
 kubectl krew install neat
 kubectl krew install prune-unused
 
+kubectl krew install get-all           
+kubectl krew install rbac-tool
+kubectl krew install resource-capacity
+kubectl krew install view-cert         
+kubectl krew install view-secret
+
 kubectl krew list 
 
 echo "Component Versions"
@@ -111,8 +117,6 @@ helm version
 
 minikube start -p issuer --kubernetes-version=${KUBERNETES_VERSION}
 
-minikube -p issuer addons enable ingress
-minikube -p issuer dashboard
 
 echo "alias k='kubectl'" >> ~/.bashrc
 echo "alias kubectx='kubectl config use-context '" >> ~/.bashrc
@@ -137,6 +141,9 @@ helm install \
   --create-namespace \
   --version $CERT_MANAGER_VERSION  \
   --set installCRDs=true
+
+minikube -p issuer addons enable ingress
+minikube -p issuer dashboard
 
 
 echo "done"
