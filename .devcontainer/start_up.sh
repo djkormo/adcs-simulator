@@ -143,7 +143,11 @@ helm install \
   --set installCRDs=true
 
 minikube -p issuer addons enable ingress
-minikube -p issuer dashboard
 
+minikube -p issuer addons enable dashboard
+minikube -p issuer addons enable metrics-server
+
+# create ingress for 
+kubectl apply -f .devcontainer/ingress-dashboard.yaml 
 
 echo "done"
