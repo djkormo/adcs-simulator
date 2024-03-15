@@ -41,8 +41,27 @@ jobs:
           type=ref,event=pr
           type=semver,pattern={{version}}
           type=sha
-        # type=semver,pattern={{major}}.{{minor}}
-        # type=semver,pattern={{major}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+
+    - name: Get the tag version for building image
+      id: get_version
+      run: echo ::set-env name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+          
+    - name: Get current date  for building image
+      id: get_date
+      run: echo "::set-output name=BUILD_TIME::$(date -u '+%Y-%m-%d_%H:%M:%S')"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+    - name: Get commit hash  for building image
+      id: get_commit
+      run: echo "::set-output name=COMMIT::$(git rev-parse --short HEAD)"
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
           
     - name: Login to DockerHub
       if: github.event_name != 'pull_request'
@@ -62,6 +81,7 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: VERSION,COMMIT,BUILD_TIME,PROJECT
       
 
     - name: Run Trivy vulnerability scanner

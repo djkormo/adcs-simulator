@@ -53,8 +53,8 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=sha
-          #  type=semver,pattern={{major}}.{{minor}}
-          #  type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
