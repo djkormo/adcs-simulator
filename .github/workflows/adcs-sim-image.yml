@@ -65,6 +65,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           buildargs: VERSION,COMMIT,BUILD_TIME,PROJECT
-          tags: "latest,${{ steps.meta.outputs.tags }}"
+          tags: "latest"
           dockerfile: Dockerfile
 
