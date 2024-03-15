@@ -1,0 +1,108 @@
+{{- if .Values.simulator.enabled  }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.simulator.deploymentName | default "adcs-sim-deployment" }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type:
+      Recreate
+  selector:
+    matchLabels:
+      control-plane: adcs-sim
+  template:
+    metadata:
+      labels:
+        control-plane: adcs-sim
+    spec:
+
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          
+      securityContext:
+        {{- toYaml  .Values.simulator.podSecurityContext | nindent 8 }}
+      containers:
+        {{- if .Values.simulator.arguments }}
+      - args:
+        {{- range $key, $value := .Values.simulator.arguments }}
+        {{- if $value }}
+        - --{{ $key }}={{ $value }}
+        {{- else }}
+        - --{{ $key  }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
+        command:
+        - /usr/local/adcs-sim/manager
+        image: {{ .Values.simulator.image.repository }}:{{ .Values.simulator.image.tag }}
+        imagePullPolicy: Always
+        env:
+      
+        - name: ENABLE_DEBUG
+          value: {{ .Values.simulator.environment.ENABLE_DEBUG |quote }}
+
+        name: manager
+        volumeMounts:
+
+        # emptydirs for storing csr and cert files
+        - name: csr
+          mountPath: "/usr/local/adcs-sim/ca"
+
+        # ca cert 
+        - name: config-pem
+          mountPath: "/usr/local/adcs-sim/ca/root.pem"
+          subPath: root.pem
+          readOnly: true
+
+        # ca key
+        - name: config-key
+          mountPath: "/usr/local/adcs-sim/ca/root.key"
+          subPath: root.key
+          readOnly: true
+
+        ports:
+        - containerPort:  {{ .Values.simulator.containerPort | default 8443 }}  # the same as --port=8443 in arguments
+          name: adcs-sim
+          protocol: TCP
+
+        resources: {{- toYaml .Values.simulator.resources | nindent 10 }}
+        
+        securityContext:
+        {{- toYaml  .Values.simulator.containerSecurityContext | nindent 10 }}
+
+
+        {{- with .Values.simulator.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+
+        {{- with .Values.simulator.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+      terminationGracePeriodSeconds: 10
+
+
+      volumes:
+
+        - name: csr
+          emptyDir:
+            sizeLimit: 50Mi 
+
+        - name: config-pem
+          secret:
+            secretName: {{.Values.simulator.secretCertificateName | default "adcs-sim-certificate-secret" }} # secret for storing ca cert
+
+        - name: config-key
+          secret:
+            secretName: {{.Values.simulator.secretCertificateName | default "adcs-sim-certificate-secret" }} # secret for storing ca key
+
+
+{{- end  }}    

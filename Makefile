@@ -15,7 +15,12 @@ build-nc: ## Build the container without caching
 	docker build --no-cache -t $(APP_NAME) . --progress=plain --build-arg VERSION=${VERSION} --build-arg  COMMIT=${COMMIT} --build-arg BUILD_TIME=${BUILD_TIME} --build-arg PROJECT=${PROJECT}
 
 run: ## Run container on port configured in `config.env`
-	docker run --name $(APP_NAME) -it  $(DOCKER_REPO)/$(APP_NAME):latest  bash
+	#docker run --name $(APP_NAME) -it  $(DOCKER_REPO)/$(APP_NAME):$(VERSION)  bash
+
+	docker run  -d  -p 8443:8443 $(DOCKER_REPO)/$(APP_NAME):$(VERSION)  -v ca/:/usr/local/adcs-sim/
+
+    #docker logs adcs-simulator -f
+
 
 stop: ## Stop and remove a running container
 	docker rm -f $(APP_NAME)
@@ -69,4 +74,8 @@ operator-build:
 
 .PHONY: docker-build
 docker-build: ## Build docker image with the manager.
-	DOCKER_BUILDKIT=1 docker build -t $(APP_NAME) . --progress=plain
+	DOCKER_BUILDKIT=1 docker build -t $(APP_NAME) . --progress=plain --build-arg VERSION=${VERSION} --build-arg  COMMIT=${COMMIT} --build-arg BUILD_TIME=${BUILD_TIME} --build-arg PROJECT=${PROJECT}
+
+.PHONY: docker-build-nc
+docker-build-nc: ## Build docker image with the manager.
+	DOCKER_BUILDKIT=1 docker build --no-cache -t $(APP_NAME) . --progress=plain --build-arg VERSION=${VERSION} --build-arg  COMMIT=${COMMIT} --build-arg BUILD_TIME=${BUILD_TIME} --build-arg PROJECT=${PROJECT}
