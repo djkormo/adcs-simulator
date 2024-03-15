@@ -1,6 +1,9 @@
 name: adcs-simulator pipeline
 
 on:
+  workflow_dispatch:
+    branches: [ main ]
+    
   push:
     paths:
       - '**.go'

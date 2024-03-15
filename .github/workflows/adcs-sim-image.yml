@@ -1,6 +1,8 @@
 name: Publish ADCS Simulator Docker image on Release
 
 on:
+  workflow_dispatch:
+    branches: [ main ]
   release:
     types: [published]
 
@@ -8,20 +10,51 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
+
+    
       - uses: actions/checkout@master
 
-      - name: Get the version from tag
+
+
+
+      - name: Get the tag version for building image
         id: get_version
-        run: echo ::set-env name=VERSION::${GITHUB_REF#refs/tags/}
+        #run: echo ::set-env name=VERSION::$(git tag --sort=taggerdate -l [0-9]* | tail -n1)
+        run: echo ::set-env name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-          COMMIT: 'variableContent'
-          BUILD_TIME: 'variableContent'  
-          PROJECT: 'github.com/nokia/adcs-sim/adcs-sim'
-          #COMMIT?=$(shell git rev-parse --short HEAD)
-          #BUILD_TIME?=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
-          #PROJECT?=github.com/nokia/adcs-sim/adcs-sim
+          
+      - name: Get current date  for building image
+        id: get_date
+        run: echo "::set-output name=BUILD_TIME::$(date -u '+%Y-%m-%d_%H:%M:%S')"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
+      - name: Get commit hash  for building image
+        id: get_commit
+        run: echo "::set-output name=COMMIT::$(git rev-parse --short HEAD)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+
+        with:
+      # list of Docker images to use as base name for tags
+          images: |
+            djkormo/adcs-simulator
+        # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
 
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
@@ -32,6 +65,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           buildargs: VERSION,COMMIT,BUILD_TIME,PROJECT
-          tags: "latest,${{ env.VERSION }}"
+          tags: "latest,${{ env.VERSION }}, ${{ steps.meta.outputs.tags }}"
           dockerfile: Dockerfile
 
