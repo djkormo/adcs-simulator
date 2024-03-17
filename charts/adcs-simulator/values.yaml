@@ -1,36 +1,49 @@
 # ADCS Simulator 
 
 simulator:
+  # -- enabling simulator
   enabled: true
-  clusterIssuserName: adcs-sim-adcsclusterissuer
-  deploymentName: adcs-sim-deployment
-  configMapName: adcs-sim-configmap
-  secretCertificateName: adcs-sim-certificate-secret
-  secretName: adcs-sim-secret
+  # -- cluster scope issuer name
+  clusterIssuserName: adcs-simulator-adcsclusterissuer
+  # -- deployment name
+  deploymentName: adcs-simulator-deployment
+  # -- configmap name
+  configMapName: adcs-simulator-configmap
+  # -- secret for simulator name
+  secretCertificateName: adcs-simulator-certificate-secret
+  # -- secret with simulator credentials 
+  secretName: adcs-simulator-secret
+  # -- simulator service name
   serviceName: adcs-sim-service 
+  # -- repository image
   image:
     repository: djkormo/adcs-simulator
     tag: 0.0.8
-
+  # -- environment variables for simulator
   environment:
     ENABLE_DEBUG: "false"
 
+  # -- arguments for simulator
   arguments:
-      dns: adcs-sim-service.adcs-issuer.svc,adcs2.example.com 
+      dns: adcs-simulator-service.adcs-issuer.svc,adcs2.example.com 
       ips: 10.10.10.1,10.10.10.2
       port: 8443
-
+  # -- simulator container port
   containerPort: 8443
+  # -- simulator service name 
   servicePort: 8443
-
+  # -- liveness probe for simulator
   livenessProbe:
+    # -- This is the readines check endpoint
     httpGet:
       path: /healthz
       port: 8443 # the same as containerPort
       scheme: HTTPS
     timeoutSeconds: 10
     periodSeconds: 10
+  # -- readines probe  for simulator
   readinessProbe:
+    # -- This is the readines check endpoint
     httpGet:
       path: /readyz
       port: 8443 # the same as containerPort
@@ -39,9 +52,11 @@ simulator:
     periodSeconds: 20
     initialDelaySeconds: 10
 
+  # -- security context on pod level
   podSecurityContext:
     runAsUser: 1000
 
+  # -- security context on container level
   containerSecurityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
@@ -49,6 +64,7 @@ simulator:
       drop:
       - all
 
+  # -- limits and requests for simulator pod
   resources:
 
     limits:
@@ -58,7 +74,14 @@ simulator:
       cpu: 100m
       memory: 100Mi  
 
+  # -- node selector for simulator pod
+  nodeSelector: {}      
+
+  # -- example of Certificate object
   exampleCertificate:
-    enabled: true 
-    name: adcs-sim-certificate
-    secretName: adcs-sim-certificate-secret
+    # == if true example of certificate will be created
+    enabled: true
+    # -- certificate name 
+    name: adcs-simulator-certificate
+    # --certificate secret for storing data
+    secretName: adcs-simulator-certificate-secret
