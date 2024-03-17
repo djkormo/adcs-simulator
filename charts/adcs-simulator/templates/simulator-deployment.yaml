@@ -11,11 +11,11 @@ spec:
       Recreate
   selector:
     matchLabels:
-      control-plane: adcs-sim
+      control-plane: adcs-simulator
   template:
     metadata:
       labels:
-        control-plane: adcs-sim
+        control-plane: adcs-simulator
     spec:
 
       topologySpreadConstraints:
@@ -89,6 +89,10 @@ spec:
 
       terminationGracePeriodSeconds: 10
 
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
       volumes:
 

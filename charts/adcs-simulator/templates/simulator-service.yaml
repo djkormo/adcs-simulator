@@ -10,6 +10,6 @@ spec:
   - port: {{ .Values.simulator.servicePort | default 8443 }}
     targetPort: {{ .Values.simulator.containerPort | default 8443 }}  
   selector:
-    control-plane: adcs-sim
+    control-plane: adcs-simulator
 
 {{- end  }}    
